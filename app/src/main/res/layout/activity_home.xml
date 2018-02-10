@@ -14,6 +14,8 @@
         android:id="@+id/rg_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="10dp"
         android:orientation="horizontal"
         android:background="@drawable/home_bottom_parent_bg">
         <RadioButton
