@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.base.BaseFragment;
 import com.fangzhang.shoppingmall.home.bean.ResultBeanData;
+import com.fangzhang.shoppingmall.home.adapter.HomeFragmentAdapter;
 import com.fangzhang.shoppingmall.utils.ConstantValue;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -28,6 +29,7 @@ public class HomeFragment extends BaseFragment {
     private TextView tv_message_home;
     private RecyclerView rv_home;
     private ImageButton ib_top;
+    private HomeFragmentAdapter homeFragmentAdapter;
 
     @Override
     public View initView() {
@@ -100,7 +102,6 @@ public class HomeFragment extends BaseFragment {
                     public void onResponse(String response, int id) {
                         Log.e(TAG, "首页请求成功 == " + response);
                         precessData(response);
-
                     }
                 });
     }
@@ -113,7 +114,16 @@ public class HomeFragment extends BaseFragment {
         // 解析数据
         ResultBeanData resultBeanData = JSON.parseObject(response, ResultBeanData.class);
         ResultBeanData.ResultBean resultBean = resultBeanData.getResult();
-        // 打印活动数据中第一个对象的图片路径
-        Log.e(TAG, "resultBean == " + resultBean.getAct_info().get(0).getIcon_url());
+        if (resultBean != null) {
+            // 设置适配器
+            /**
+             * 首页有很多类型的数据
+             * 并不是说每一种类型的数据我都要对应的设置相应的适配器
+             * 其实RecyclerView是支持条目类型不同的
+             * 也就是说,我只要把数据设置到不同的条目上显示就可以了
+             */
+            homeFragmentAdapter = new HomeFragmentAdapter(mContext, resultBean);
+            rv_home.setAdapter(homeFragmentAdapter);
+        }
     }
 }
