@@ -2,19 +2,20 @@ package com.fangzhang.shoppingmall.home.fragment;
 
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.base.BaseFragment;
+import com.fangzhang.shoppingmall.home.bean.ResultBeanData;
+import com.fangzhang.shoppingmall.utils.ConstantValue;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import okhttp3.Call;
-import okhttp3.Request;
 
 /**
  * 主页面的Fragment
@@ -68,28 +69,51 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        String url = "http://www.csdn.net/";
+        Log.e(TAG, "主页数据被初始化了");
+        // 联网请求主页的数据
+        getDataFromNet();
+    }
+
+    /**
+     * 请求网络数据
+     */
+    private void getDataFromNet() {
+        String url = ConstantValue.HOME_URL;
         OkHttpUtils
                 .get()
                 .url(url)
                 .build()
                 .execute(new StringCallback() {
                     /**
-                     * 请求失败
+                     * 请求失败时回调
                      */
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        e.printStackTrace();
+                        Log.e(TAG, "首页请求失败 == " + e.getMessage());
                     }
 
                     /**
-                     * 请求成功
+                     * 请求成功时回调
                      * @param response 响应到的字符串等数据
                      */
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.e(TAG, response);
+                        Log.e(TAG, "首页请求成功 == " + response);
+                        precessData(response);
+
                     }
                 });
+    }
+
+    /**
+     * 解析json数据
+     * @param response 待解析的json串
+     */
+    private void precessData(String response) {
+        // 解析数据
+        ResultBeanData resultBeanData = JSON.parseObject(response, ResultBeanData.class);
+        ResultBeanData.ResultBean resultBean = resultBeanData.getResult();
+        // 打印活动数据中第一个对象的图片路径
+        Log.e(TAG, "resultBean == " + resultBean.getAct_info().get(0).getIcon_url());
     }
 }
