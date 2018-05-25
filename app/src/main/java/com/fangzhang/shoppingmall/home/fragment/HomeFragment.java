@@ -10,6 +10,11 @@ import android.widget.Toast;
 
 import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.base.BaseFragment;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import okhttp3.Call;
+import okhttp3.Request;
 
 /**
  * 主页面的Fragment
@@ -63,6 +68,28 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        Log.e(TAG, "主页数据被初始化了");
+        String url = "http://www.csdn.net/";
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    /**
+                     * 请求失败
+                     */
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        e.printStackTrace();
+                    }
+
+                    /**
+                     * 请求成功
+                     * @param response 响应到的字符串等数据
+                     */
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.e(TAG, response);
+                    }
+                });
     }
 }
