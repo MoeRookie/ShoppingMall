@@ -1,6 +1,9 @@
 package com.fangzhang.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,6 +81,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             return new BannerViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_banner,null));
         } else if (viewType == CHANNEL) {
             return new ChannelViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_channel,null));
+        } else if (viewType == ACT) {
+            return new ActViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_act,null));
         }
         return null;
     }
@@ -91,6 +96,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         } else if (type == CHANNEL) {
             ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
             channelViewHolder.setData(mResultBean.getChannel_info());
+        } else if (type == ACT) {
+            ActViewHolder actViewHolder = (ActViewHolder) holder;
+            actViewHolder.setData(mResultBean.getAct_info());
         }
     }
 
@@ -122,7 +130,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         // 以后做完后改成6,现在只实现横幅广告,暂时写1
-        return 2;
+        return 3;
     }
 
     private class BannerViewHolder extends RecyclerView.ViewHolder {
@@ -193,6 +201,70 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             // 1. 设置GridView的适配器
             channelAdapter = new ChannelAdapter(ctx, channel_info);
             gv_channel.setAdapter(channelAdapter);
+        }
+    }
+
+    private class ActViewHolder extends RecyclerView.ViewHolder {
+        private final ViewPager act_viewpager;
+        private Context ctx;
+
+        public ActViewHolder(Context ctx, View itemView) {
+            super(itemView);
+            this.act_viewpager = itemView.findViewById(R.id.act_viewpager);
+            this.ctx = ctx;
+        }
+
+        public void setData(final List<ResultBeanData.ResultBean.ActInfoBean> act_info) {
+            // 获取到了活动数据
+            // 1. 给ViewPager设置适配器
+            act_viewpager.setAdapter(new PagerAdapter() {
+                @Override
+                public int getCount() {
+                    return act_info == null?0:act_info.size();
+                }
+
+                /**
+                 * @param view 页面
+                 * @param object instantiateItem()方法的返回值
+                 * @return
+                 */
+                @Override
+                public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+                    return view == object;
+                }
+
+                /**
+                 * @param container ViewPager
+                 * @param position 对应页面的位置
+                 * @return
+                 */
+                @NonNull
+                @Override
+                public Object instantiateItem(@NonNull ViewGroup container, final int position) {
+                    // 1. 每个Item应该是一个ImageView
+                    ImageView imageView = new ImageView(ctx);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    // 2. 给ImageView设置数据
+                    Glide.with(ctx)
+                            .load(ConstantValue.IMAGE_BASE_URL+act_info.get(position).getIcon_url())
+                            .into(imageView);
+                    // 4. 给imageView设置点击事件
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // 3. 将Item添加到容器中
+                    container.addView(imageView);
+                    return imageView;
+                }
+
+                @Override
+                public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+                    container.removeView((ImageView) object);
+                }
+            });
         }
     }
 }
