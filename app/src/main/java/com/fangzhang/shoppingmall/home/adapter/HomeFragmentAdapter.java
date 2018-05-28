@@ -2,17 +2,32 @@ package com.fangzhang.shoppingmall.home.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.home.bean.ResultBeanData;
+import com.fangzhang.shoppingmall.utils.ConstantValue;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by MoeRookie on 2018/5/25.
  */
 
 public class HomeFragmentAdapter extends RecyclerView.Adapter{
+    private static final String TAG = HomeFragmentAdapter.class.getSimpleName();
     /**
      * 横幅广告
      */
@@ -58,12 +73,19 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
      */
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == BANNER) {
+            return new BannerViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_banner,null));
+        }
         return null;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        int type = getItemViewType(position);
+        if (type == BANNER) {
+            BannerViewHolder bannerViewHolder = (BannerViewHolder) holder;
+            bannerViewHolder.setData(mResultBean.getBanner_info());
+        }
     }
 
     @Override
@@ -95,5 +117,49 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     public int getItemCount() {
         // 以后做完后改成6,现在只实现横幅广告,暂时写1
         return 1;
+    }
+
+    private class BannerViewHolder extends RecyclerView.ViewHolder {
+        private final Banner banner;
+        private Context ctx;
+
+        public BannerViewHolder(Context ctx, View itemView) {
+            super(itemView);
+            this.banner = itemView.findViewById(R.id.banner);
+            this.ctx = ctx;
+        }
+
+        public void setData(List<ResultBeanData.ResultBean.BannerInfoBean> banner_info) {
+            // 设置Banner的数据
+            // 1. 得到图片地址的集合
+            ArrayList<String> imageUrls = new ArrayList<>();
+            for (int i = 0; i < banner_info.size(); i++) {
+                String imageUrl = banner_info.get(i).getImage();
+                imageUrls.add(imageUrl);
+            }
+            // 设置循环指示点
+            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+            // 设置手风琴效果
+            banner.setBannerAnimation(Transformer.Accordion);
+            // 2. 给Banner设置images
+            banner.setImages(imageUrls);
+            // 3. 给Banner设置图片加载器
+            banner.setImageLoader(new ImageLoader() {
+                @Override
+                public void displayImage(Context context, Object path, ImageView imageView) {
+                    //Glide 加载图片简单用法
+                    Glide.with(context).load(ConstantValue.IMAGE_BASE_URL + path).into(imageView);
+                }
+            });
+            // 设置item的点击事件
+            banner.setOnBannerListener(new OnBannerListener() {
+                @Override
+                public void OnBannerClick(int position) {
+                    Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+            // 4. 最后启动调用
+            banner.start();
+        }
     }
 }

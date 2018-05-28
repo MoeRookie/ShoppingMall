@@ -1,5 +1,6 @@
 package com.fangzhang.shoppingmall.home.fragment;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -123,6 +124,7 @@ public class HomeFragment extends BaseFragment {
              * 也就是说,我只要把数据设置到不同的条目上显示就可以了
              */
             homeFragmentAdapter = new HomeFragmentAdapter(mContext, resultBean);
+            rv_home.setLayoutManager(new GridLayoutManager(mContext,1));
             rv_home.setAdapter(homeFragmentAdapter);
         }
     }
