@@ -22,6 +22,7 @@ import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
+import com.youth.banner.transformer.ScaleInOutTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,6 +216,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         }
 
         public void setData(final List<ResultBeanData.ResultBean.ActInfoBean> act_info) {
+            // 使用美化库对ViewPager进行美化
+            act_viewpager.setPageMargin(20);
+            act_viewpager.setOffscreenPageLimit(3);//>=3
+            // 设置动画效果
+            act_viewpager.setPageTransformer(true,new ScaleInOutTransformer());
             // 获取到了活动数据
             // 1. 给ViewPager设置适配器
             act_viewpager.setAdapter(new PagerAdapter() {
