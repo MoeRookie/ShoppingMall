@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -84,6 +86,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             return new ChannelViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_channel,null));
         } else if (viewType == ACT) {
             return new ActViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_act,null));
+        }else if (viewType == SECKILL) {
+            return new SecKillViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_seckill,null));
         }
         return null;
     }
@@ -100,6 +104,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         } else if (type == ACT) {
             ActViewHolder actViewHolder = (ActViewHolder) holder;
             actViewHolder.setData(mResultBean.getAct_info());
+        } else if (type == SECKILL) {
+            SecKillViewHolder secKillViewHolder = (SecKillViewHolder) holder;
+            secKillViewHolder.setData(mResultBean.getSeckill_info());
         }
     }
 
@@ -131,9 +138,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         // 以后做完后改成6,现在只实现横幅广告,暂时写1
-        return 3;
+        return 4;
     }
-
+    /**
+     * 横幅广告的Holder
+     */
     private class BannerViewHolder extends RecyclerView.ViewHolder {
         private final Banner banner;
         private Context ctx;
@@ -177,7 +186,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             banner.start();
         }
     }
-
+    /**
+     * 频道的Holder
+     */
     private class ChannelViewHolder extends RecyclerView.ViewHolder {
         private final GridView gv_channel;
         private Context ctx;
@@ -204,7 +215,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             gv_channel.setAdapter(channelAdapter);
         }
     }
-
+    /**
+     * 活动的Holder
+     */
     private class ActViewHolder extends RecyclerView.ViewHolder {
         private final ViewPager act_viewpager;
         private Context ctx;
@@ -271,6 +284,38 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                     container.removeView((ImageView) object);
                 }
             });
+        }
+    }
+
+    /**
+     * 秒杀的Holder
+     */
+    private class SecKillViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tv_time_seckill;
+        private final TextView tv_more_seckill;
+        private final RecyclerView rv_seckill;
+        private Context ctx;
+        private SecKillAdapter secKillAdapter;
+
+        public SecKillViewHolder(Context ctx, View itemView) {
+            super(itemView);
+            this.ctx = ctx;
+            tv_time_seckill = itemView.findViewById(R.id.tv_time_seckill);
+            tv_more_seckill = itemView.findViewById(R.id.tv_more_seckill);
+            rv_seckill = itemView.findViewById(R.id.rv_seckill);
+        }
+
+        public void setData(ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
+            // 1. 获取到列表数据
+            List<ResultBeanData.ResultBean.SeckillInfoBean.ListBean> seckill_infoList
+                    = seckill_info.getList();
+            // 2. 创建RecyclerView的适配器
+            secKillAdapter = new SecKillAdapter(mCtx, seckill_infoList);
+            // 3. 设置适配器到RecyclerView上
+            rv_seckill.setAdapter(secKillAdapter);
+            // 4. 别忘了给RecyclerView设置布局管理器
+            rv_seckill.setLayoutManager(
+                    new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
         }
     }
 }
