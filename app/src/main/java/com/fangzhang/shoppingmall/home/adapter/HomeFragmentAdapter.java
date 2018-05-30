@@ -92,6 +92,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             return new ActViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_act,null));
         }else if (viewType == SECKILL) {
             return new SecKillViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_seckill,null));
+        }else if (viewType == RECOMMEND) {
+            return new RecommendViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_recommend,null));
         }
         return null;
     }
@@ -111,6 +113,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         } else if (type == SECKILL) {
             SecKillViewHolder secKillViewHolder = (SecKillViewHolder) holder;
             secKillViewHolder.setData(mResultBean.getSeckill_info());
+        } else if (type == RECOMMEND) {
+            RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
+            recommendViewHolder.setData(mResultBean.getRecommend_info());
         }
     }
 
@@ -142,7 +147,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         // 以后做完后改成6,现在只实现横幅广告,暂时写1
-        return 4;
+        return 5;
     }
     /**
      * 横幅广告的Holder
@@ -354,6 +359,35 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             // 4. 别忘了给RecyclerView设置布局管理器
             rv_seckill.setLayoutManager(
                     new LinearLayoutManager(ctx,LinearLayoutManager.HORIZONTAL,false));
+        }
+    }
+    
+    private class RecommendViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tv_more_recommend;
+        private final GridView gv_recommend;
+        private Context ctx;
+        private RecommendAdapter recommendAdapter;
+    
+        public RecommendViewHolder(Context ctx, View itemView) {
+            super(itemView);
+            this.ctx = ctx;
+            tv_more_recommend = itemView.findViewById(R.id.tv_more_recommend);
+            gv_recommend = itemView.findViewById(R.id.gv_recommend);
+        }
+    
+        public void setData(List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
+            // 1. 获取到推荐列表
+            // 2. 创建GridView的适配器
+            recommendAdapter = new RecommendAdapter(ctx, recommend_info);
+            // 3. 给GridView设置适配器
+            gv_recommend.setAdapter(recommendAdapter);
+            // 4. 给GridView设置列表项点击事件监听
+            gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
