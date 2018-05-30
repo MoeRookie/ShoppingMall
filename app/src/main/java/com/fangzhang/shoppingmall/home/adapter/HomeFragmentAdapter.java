@@ -311,6 +311,13 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                     = seckill_info.getList();
             // 2. 创建RecyclerView的适配器
             secKillAdapter = new SecKillAdapter(mCtx, seckill_infoList);
+            // 设置条目被点击时的监听
+            secKillAdapter.setOnItemClickListener(new SecKillAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(int position) {
+                    Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
+                }
+            });
             // 3. 设置适配器到RecyclerView上
             rv_seckill.setAdapter(secKillAdapter);
             // 4. 别忘了给RecyclerView设置布局管理器

@@ -60,6 +60,45 @@ class SecKillAdapter extends RecyclerView.Adapter<SecKillAdapter.SecKillViewHold
             iv_figure = itemView.findViewById(R.id.iv_figure);
             tv_cover_price = itemView.findViewById(R.id.tv_cover_price);
             tv_origin_price = itemView.findViewById(R.id.tv_origin_price);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // 获取到当前被点击的秒杀列表项的位置getLayoutPosition();
+                    // 调用listener中的onItemClick方法
+                    if (listener != null) {
+                        listener.onItemClick(getLayoutPosition());
+                    }
+                }
+            });
         }
+    }
+    /*
+    * 1. 写当前RecyclerView条目被点击时的接口
+    *   当某个列表项被点击的时候回调
+    *   回调其中的onItemClick方法
+    * 2. 需要外界将接口的实现类对象(监听器)传入
+    * 3. 所以需要定义一个listener变量;
+    * 4. 实际上被点击的依然是itemView.
+    *   故设置其点击事件,在处理点击事件时将position传入并调用onItemClick方法
+    *   然后其实是调用了listener实现类对象的该方法
+    * */
+    private OnItemClickListener listener;
+    // 1. 写当前RecyclerView条目被点击时的接口
+    public interface OnItemClickListener{
+        /**
+         * 当某个列表项被点击的时候回调
+         * @param position
+         */
+        // 3. 在传入监听器的时候,应将被点击条目的下标传过来
+        public void onItemClick(int position);
+    }
+    
+    /**
+     * 设置item的监听器
+     * @param listener
+     */
+    // 2. 需要外界将接口的实现类对象(监听器)传入
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 }
