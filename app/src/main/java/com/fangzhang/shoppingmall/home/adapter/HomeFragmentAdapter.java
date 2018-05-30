@@ -1,6 +1,8 @@
 package com.fangzhang.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -26,7 +28,9 @@ import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
 import com.youth.banner.transformer.ScaleInOutTransformer;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -296,7 +300,29 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         private final RecyclerView rv_seckill;
         private Context ctx;
         private SecKillAdapter secKillAdapter;
-
+        /**
+         * 相差多少时间 - 毫秒
+         */
+        // 1. 创建Handler对象,重写handleMessage方法(设置时间显示)
+        private long dt = 0;
+        private Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                // 设置时间显示
+                SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+                String time = format.format(new Date(dt));
+                tv_time_seckill.setText(time);
+                handler.removeMessages(0);
+                // 改变dt,重发消息(直到dt<=0)
+                dt = dt - 1000;
+                handler.sendEmptyMessageDelayed(0,1000);
+                if (dt <= 0) {
+                    // 移除消息
+                    handler.removeCallbacksAndMessages(null);
+                }
+            }
+        };
         public SecKillViewHolder(Context ctx, View itemView) {
             super(itemView);
             this.ctx = ctx;
@@ -306,6 +332,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         }
 
         public void setData(ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
+            // 2. 获取时间间隔
+            dt = Integer.valueOf(seckill_info.getEnd_time())
+                    -Integer.valueOf(seckill_info.getStart_time());
+            // 3. 发送延时消息
+            handler.sendEmptyMessageDelayed(0,1000);
             // 1. 获取到列表数据
             List<ResultBeanData.ResultBean.SeckillInfoBean.ListBean> seckill_infoList
                     = seckill_info.getList();
