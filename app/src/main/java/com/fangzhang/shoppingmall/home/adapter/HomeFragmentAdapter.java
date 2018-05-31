@@ -1,6 +1,7 @@
 package com.fangzhang.shoppingmall.home.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.fangzhang.shoppingmall.R;
+import com.fangzhang.shoppingmall.app.GoodsInfoActivity;
 import com.fangzhang.shoppingmall.home.bean.ResultBeanData;
 import com.fangzhang.shoppingmall.utils.ConstantValue;
 import com.youth.banner.Banner;
@@ -193,6 +195,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             banner.setOnBannerListener(new OnBannerListener() {
                 @Override
                 public void OnBannerClick(int position) {
+                    // 跳转商品详情
+                    startGoodsInfoActivity();
                     Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -200,6 +204,15 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             banner.start();
         }
     }
+    
+    /**
+     * 启动商品信息列表界面
+     */
+    private void startGoodsInfoActivity() {
+        Intent intent = new Intent(mCtx, GoodsInfoActivity.class);
+        mCtx.startActivity(intent);
+    }
+    
     /**
      * 频道的Holder
      */
@@ -357,6 +370,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                 @Override
                 public void onItemClick(int position) {
                     Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
             // 3. 设置适配器到RecyclerView上
@@ -394,6 +408,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
         }
@@ -418,6 +433,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
+                    startGoodsInfoActivity();
                 }
             });
         }
