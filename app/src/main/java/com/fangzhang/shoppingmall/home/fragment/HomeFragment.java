@@ -124,7 +124,23 @@ public class HomeFragment extends BaseFragment {
              * 也就是说,我只要把数据设置到不同的条目上显示就可以了
              */
             homeFragmentAdapter = new HomeFragmentAdapter(mContext, resultBean);
-            rv_home.setLayoutManager(new GridLayoutManager(mContext,1));
+            GridLayoutManager layoutManager = new GridLayoutManager(mContext, 1);
+            rv_home.setLayoutManager(layoutManager);
+            // 设置跨度大小监听
+            layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (position <= 3) {
+                        // 隐藏
+                        ib_top.setVisibility(View.GONE);
+                    } else {
+                        // 显示
+                        ib_top.setVisibility(View.VISIBLE);
+                    }
+                    // 只能返回1
+                    return 1;
+                }
+            });
             rv_home.setAdapter(homeFragmentAdapter);
         }
     }
