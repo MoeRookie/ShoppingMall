@@ -94,6 +94,8 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             return new SecKillViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_seckill,null));
         }else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_recommend,null));
+        }else if (viewType == HOT) {
+            return new HotViewHolder(mCtx,mLayoutInflater.inflate(R.layout.fragment_home_hot,null));
         }
         return null;
     }
@@ -116,6 +118,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         } else if (type == RECOMMEND) {
             RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
             recommendViewHolder.setData(mResultBean.getRecommend_info());
+        } else if (type == HOT) {
+            HotViewHolder hotViewHolder = (HotViewHolder) holder;
+            hotViewHolder.setData(mResultBean.getHot_info());
         }
     }
 
@@ -147,7 +152,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         // 以后做完后改成6,现在只实现横幅广告,暂时写1
-        return 5;
+        return 6;
     }
     /**
      * 横幅广告的Holder
@@ -362,6 +367,9 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
         }
     }
     
+    /**
+     * 推荐的Holder
+     */
     private class RecommendViewHolder extends RecyclerView.ViewHolder {
         private final TextView tv_more_recommend;
         private final GridView gv_recommend;
@@ -388,6 +396,37 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
                     Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+    
+    /**
+     * 热卖的Holder
+     */
+    private class HotViewHolder extends RecyclerView.ViewHolder {
+        private final TextView tv_more_hot;
+        private final GridView gv_hot;
+        private Context ctx;
+    
+        public HotViewHolder(final Context ctx, View itemView) {
+            super(itemView);
+            this.ctx = ctx;
+            tv_more_hot = itemView.findViewById(R.id.tv_more_hot);
+            gv_hot = itemView.findViewById(R.id.gv_hot);
+    
+            // 设置item的点击事件
+            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    
+        public void setData(List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
+            // 1. 创建gv_hot的适配器
+            HotAdapter hotAdapter = new HotAdapter(ctx, hot_info);
+            // 2. 将该适配器设置到gv_hot上
+            gv_hot.setAdapter(hotAdapter);
         }
     }
 }
