@@ -5,7 +5,7 @@ package com.fangzhang.shoppingmall.utils;
  */
 
 public class ConstantValue {
-    public static final String BASE_URL = "http://192.168.0.116:8080/atguigu/";
+    public static final String BASE_URL = "http://192.168.0.114:8080/atguigu/";
     /**
      * 主页面的路径
      */
