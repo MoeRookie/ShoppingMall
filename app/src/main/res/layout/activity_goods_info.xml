@@ -211,5 +211,7 @@
                 android:text="加入购物车"
                 android:textColor="#fff" />
         </LinearLayout>
+        // 更多
+        <include layout="@layout/more_layout" />
     </FrameLayout>
 </LinearLayout>
