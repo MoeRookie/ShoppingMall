@@ -33,6 +33,10 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
     private TextView tvGoodInfoCollection;
     private TextView tvGoodInfoCart;
     private Button btnGoodInfoAddcart;
+    private TextView tv_more_share;
+    private TextView tv_more_search;
+    private View tv_more_home;
+    
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,18 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
         ibGoodInfoBack.setOnClickListener( this );
         ibGoodInfoMore.setOnClickListener( this );
         btnGoodInfoAddcart.setOnClickListener( this );
+    
+        tvGoodInfoCallcenter.setOnClickListener(this);
+        tvGoodInfoCollection.setOnClickListener(this);
+        tvGoodInfoCart.setOnClickListener(this);
+    
+        tv_more_share = findViewById(R.id.tv_more_share);
+        tv_more_search = findViewById(R.id.tv_more_search);
+        tv_more_home = findViewById(R.id.tv_more_home);
+        tv_more_share.setOnClickListener(this);
+        tv_more_search.setOnClickListener(this);
+        tv_more_home.setOnClickListener(this);
+    
     }
     /**
      * Handle button click events<br />
@@ -79,7 +95,19 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
             // Handle clicks for ibGoodInfoMore
             Toast.makeText(this, "更多 . . .", Toast.LENGTH_SHORT).show();
         } else if ( v == btnGoodInfoAddcart ) {
-            // Handle clicks for btnGoodInfoAddcart
+            Toast.makeText(this, "添加购物车", Toast.LENGTH_SHORT).show();
+        }else if ( v == tvGoodInfoCallcenter ) {
+            Toast.makeText(this, "联系客服", Toast.LENGTH_SHORT).show();
+        }else if ( v == tvGoodInfoCollection ) {
+            Toast.makeText(this, "收藏", Toast.LENGTH_SHORT).show();
+        }else if ( v == tvGoodInfoCart ) {
+            Toast.makeText(this, "购物车", Toast.LENGTH_SHORT).show();
+        }else if ( v == tv_more_share ) {
+            Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
+        }else if ( v == tv_more_search ) {
+            Toast.makeText(this, "搜索", Toast.LENGTH_SHORT).show();
+        }else if ( v == tv_more_home ) {
+            Toast.makeText(this, "首页", Toast.LENGTH_SHORT).show();
         }
     }
 }
