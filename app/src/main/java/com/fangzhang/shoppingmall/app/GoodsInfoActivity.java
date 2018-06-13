@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.home.bean.GoodsBean;
+import com.fangzhang.shoppingmall.shoppingcart.utils.CartStorage;
 import com.fangzhang.shoppingmall.utils.ConstantValue;
 
 /**
@@ -150,7 +151,8 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
             // Handle clicks for ibGoodInfoMore
             Toast.makeText(this, "更多 . . .", Toast.LENGTH_SHORT).show();
         } else if ( v == btnGoodInfoAddcart ) {
-            Toast.makeText(this, "添加购物车", Toast.LENGTH_SHORT).show();
+            CartStorage.getInstance().addData(goodsBean);
+            Toast.makeText(this, "添加购物车成功了", Toast.LENGTH_SHORT).show();
         }else if ( v == tvGoodInfoCallcenter ) {
             Toast.makeText(this, "联系客服", Toast.LENGTH_SHORT).show();
         }else if ( v == tvGoodInfoCollection ) {

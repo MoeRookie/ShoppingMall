@@ -37,4 +37,5 @@ dependencies {
     annotationProcessor 'com.zhy:magic-viewpager:1.0.1'
     implementation 'com.baoyz.pg:core:2.1.1'
     annotationProcessor 'com.baoyz.pg:compiler:2.1.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

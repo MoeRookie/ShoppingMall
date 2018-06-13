@@ -15,6 +15,16 @@ public class GoodsBean {
     private String name;
     // 价格
     private String cover_price;
+    // 数量
+    private int number;
+    
+    public void setNumber(int number) {
+        this.number = number;
+    }
+    
+    public int getNumber() {
+        return number;
+    }
     
     public GoodsBean(String product_id, String figure, String name, String cover_price) {
         this.product_id = product_id;
@@ -65,6 +75,7 @@ public class GoodsBean {
                 ", figure='" + figure + '\'' +
                 ", name='" + name + '\'' +
                 ", cover_price='" + cover_price + '\'' +
+                ", number=" + number +
                 '}';
     }
 }
