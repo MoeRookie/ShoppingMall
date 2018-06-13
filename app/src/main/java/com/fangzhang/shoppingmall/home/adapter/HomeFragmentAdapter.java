@@ -18,9 +18,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.pg.PG;
 import com.bumptech.glide.Glide;
 import com.fangzhang.shoppingmall.R;
 import com.fangzhang.shoppingmall.app.GoodsInfoActivity;
+import com.fangzhang.shoppingmall.home.bean.GoodsBean;
 import com.fangzhang.shoppingmall.home.bean.ResultBeanData;
 import com.fangzhang.shoppingmall.utils.ConstantValue;
 import com.youth.banner.Banner;
@@ -41,6 +43,7 @@ import java.util.List;
 
 public class HomeFragmentAdapter extends RecyclerView.Adapter{
     private static final String TAG = HomeFragmentAdapter.class.getSimpleName();
+    private static final String GOODS_BEAN = "goods_bean";
     /**
      * 横幅广告
      */
@@ -195,8 +198,6 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             banner.setOnBannerListener(new OnBannerListener() {
                 @Override
                 public void OnBannerClick(int position) {
-                    // 跳转商品详情
-                    startGoodsInfoActivity();
                     Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
                 }
             });
@@ -207,9 +208,12 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
     
     /**
      * 启动商品信息列表界面
+     * @param goodsBean
      */
-    private void startGoodsInfoActivity() {
+    private void startGoodsInfoActivity(GoodsBean goodsBean) {
+        // 序列化goodsBean
         Intent intent = new Intent(mCtx, GoodsInfoActivity.class);
+        intent.putExtra(GOODS_BEAN, PG.convertParcelable(goodsBean));
         mCtx.startActivity(intent);
     }
     
@@ -354,14 +358,14 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             rv_seckill = itemView.findViewById(R.id.rv_seckill);
         }
 
-        public void setData(ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
+        public void setData(final ResultBeanData.ResultBean.SeckillInfoBean seckill_info) {
             // 2. 获取时间间隔
             dt = Integer.valueOf(seckill_info.getEnd_time())
                     -Integer.valueOf(seckill_info.getStart_time());
             // 3. 发送延时消息
             handler.sendEmptyMessageDelayed(0,1000);
             // 1. 获取到列表数据
-            List<ResultBeanData.ResultBean.SeckillInfoBean.ListBean> seckill_infoList
+            final List<ResultBeanData.ResultBean.SeckillInfoBean.ListBean> seckill_infoList
                     = seckill_info.getList();
             // 2. 创建RecyclerView的适配器
             secKillAdapter = new SecKillAdapter(mCtx, seckill_infoList);
@@ -369,8 +373,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             secKillAdapter.setOnItemClickListener(new SecKillAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(int position) {
-                    Toast.makeText(ctx, "position == " + position, Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    // 根据seckill_infoList获取到listBean对象
+                    ResultBeanData.ResultBean.SeckillInfoBean.ListBean listBean = seckill_infoList.get(position);
+                    GoodsBean goodsBean = new GoodsBean(listBean.getProduct_id()
+                    ,listBean.getFigure(),listBean.getName(),listBean.getCover_price());
+                    startGoodsInfoActivity(goodsBean);
                 }
             });
             // 3. 设置适配器到RecyclerView上
@@ -397,7 +404,7 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             gv_recommend = itemView.findViewById(R.id.gv_recommend);
         }
     
-        public void setData(List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
+        public void setData(final List<ResultBeanData.ResultBean.RecommendInfoBean> recommend_info) {
             // 1. 获取到推荐列表
             // 2. 创建GridView的适配器
             recommendAdapter = new RecommendAdapter(ctx, recommend_info);
@@ -407,8 +414,11 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             gv_recommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
+                    // 根据recommend_info获取到recommendInfoBean对象
+                    ResultBeanData.ResultBean.RecommendInfoBean recommendInfoBean = recommend_info.get(i);
+                    GoodsBean goodsBean = new GoodsBean(recommendInfoBean.getProduct_id()
+                            ,recommendInfoBean.getFigure(),recommendInfoBean.getName(),recommendInfoBean.getCover_price());
+                    startGoodsInfoActivity(goodsBean);
                 }
             });
         }
@@ -427,22 +437,24 @@ public class HomeFragmentAdapter extends RecyclerView.Adapter{
             this.ctx = ctx;
             tv_more_hot = itemView.findViewById(R.id.tv_more_hot);
             gv_hot = itemView.findViewById(R.id.gv_hot);
-    
-            // 设置item的点击事件
-            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    Toast.makeText(ctx, "position == " + i, Toast.LENGTH_SHORT).show();
-                    startGoodsInfoActivity();
-                }
-            });
         }
     
-        public void setData(List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
+        public void setData(final List<ResultBeanData.ResultBean.HotInfoBean> hot_info) {
             // 1. 创建gv_hot的适配器
             HotAdapter hotAdapter = new HotAdapter(ctx, hot_info);
             // 2. 将该适配器设置到gv_hot上
             gv_hot.setAdapter(hotAdapter);
+            // 设置item的点击事件
+            gv_hot.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    // 根据hot_info获取到hotInfoBean对象
+                    ResultBeanData.ResultBean.HotInfoBean hotInfoBean = hot_info.get(i);
+                    GoodsBean goodsBean = new GoodsBean(hotInfoBean.getProduct_id()
+                            ,hotInfoBean.getFigure(),hotInfoBean.getName(),hotInfoBean.getCover_price());
+                    startGoodsInfoActivity(goodsBean);
+                }
+            });
         }
     }
 }

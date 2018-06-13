@@ -35,4 +35,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     annotationProcessor 'com.zhy:magic-viewpager:1.0.1'
+    implementation 'com.baoyz.pg:core:2.1.1'
+    annotationProcessor 'com.baoyz.pg:compiler:2.1.1'
 }

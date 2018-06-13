@@ -2,6 +2,7 @@ package com.fangzhang.shoppingmall.app;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebView;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fangzhang.shoppingmall.R;
+import com.fangzhang.shoppingmall.home.bean.GoodsBean;
 
 /**
  * Created by MoeRookie on 2018/5/31.
@@ -36,12 +38,18 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
     private TextView tv_more_share;
     private TextView tv_more_search;
     private View tv_more_home;
+    private GoodsBean goodsBean;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goods_info);
         findViews();
+        // 接收数据
+        goodsBean = getIntent().getParcelableExtra("goods_bean");
+        if (goodsBean != null) {
+            Toast.makeText(this, "goodsBean = " + goodsBean.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
     /**
      * Find the Views in the layout<br />
@@ -78,7 +86,6 @@ public class GoodsInfoActivity extends Activity implements View.OnClickListener{
         tv_more_share.setOnClickListener(this);
         tv_more_search.setOnClickListener(this);
         tv_more_home.setOnClickListener(this);
-    
     }
     /**
      * Handle button click events<br />
